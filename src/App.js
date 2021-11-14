@@ -1,25 +1,19 @@
-import logo from "./logo.svg";
+import React from "react";
 import "./App.css";
+import SignIn from "./components/signIn.component";
+import SignUp from "./components/signUp.component.jsx";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+
 require("dotenv").config();
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Visit {process.env.REACT_APP_BACKEND_URL}
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+      </Routes>
+    </Router>
   );
 }
 
