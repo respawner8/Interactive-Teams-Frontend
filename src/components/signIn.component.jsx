@@ -1,4 +1,5 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -11,19 +12,35 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 
-import { signInWithGoogle } from "../firebase/firebase.utils.js";
+import { signInWithGoogle, login } from "../firebase/firebase.utils.js";
 import UserContext from "../context/UserContext.js";
 
 export default function SignIn() {
   const { userDetails } = useContext(UserContext);
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  let navigate = useNavigate();
+
+  async function login1() {
+		try {
+			await login(email, password)
+      
+      navigate("/dashboard");
+		} catch(error) {
+			alert(error.message)
+		}
+	}
+
+  async function googleLogin() {
+		try {
+			await signInWithGoogle();
+      
+      navigate("/dashboard");
+		} catch(error) {
+			alert(error.message)
+		}
+	}
 
   return (
     <Container component="main" maxWidth="xs">
@@ -35,7 +52,7 @@ export default function SignIn() {
         }}
       >
         <Paper
-          elevation={2}
+          elevation={4}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -56,7 +73,7 @@ export default function SignIn() {
           </Typography>
           <Box
             component="form"
-            onSubmit={handleSubmit}
+            onSubmit={(e) => e.preventDefault() && false}
             noValidate
             sx={{ mt: 1 }}
           >
@@ -69,6 +86,8 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               margin="normal"
@@ -79,6 +98,8 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <Grid container alignItems="flex-start">
               <Grid item>
@@ -92,6 +113,7 @@ export default function SignIn() {
               <Grid item xs>
                 <Button
                   type="submit"
+                  onClick={login1}
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
@@ -101,7 +123,7 @@ export default function SignIn() {
               </Grid>
               <Grid item xs>
                 <Button
-                  onClick={signInWithGoogle}
+                  onClick={googleLogin}
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
@@ -129,4 +151,7 @@ export default function SignIn() {
       </Box>
     </Container>
   );
+
+
+
 }
