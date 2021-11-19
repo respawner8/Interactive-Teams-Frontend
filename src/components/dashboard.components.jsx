@@ -21,6 +21,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
+import { connect } from 'react-redux';
+
 import { auth } from "../firebase/firebase.utils.js";
 
 const drawerWidth = 240;
@@ -71,7 +73,7 @@ const Drawer = styled(MuiDrawer, {
 
 const mdTheme = createTheme();
 
-function DashboardContent() {
+function Dashboard({currentUser}) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -89,7 +91,12 @@ function DashboardContent() {
     }
   }
 
+  if(currentUser == null)
+  {
+    navigate("/");
+  }
   return (
+
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
@@ -121,6 +128,7 @@ function DashboardContent() {
               Interactive-Teams
             </Typography>
             <Typography variant="h6" color="inherit" component="div">
+              {currentUser ? currentUser.displayName + " " : "null " }
               <Button variant="contained" onClick={logOut}>
                 Logout
               </Button>
@@ -198,6 +206,8 @@ function DashboardContent() {
   );
 }
 
-export default function Dashboard() {
-  return <DashboardContent />;
-}
+const mapStateToProps = state => ({
+  currentUser: state.user.currentUser
+});
+
+export default connect(mapStateToProps)(Dashboard);

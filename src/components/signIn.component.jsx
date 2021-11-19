@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 
+import { connect } from 'react-redux';
 import { auth, signInWithGoogle } from "../firebase/firebase.utils.js";
 
 class SignIn extends React.Component {
@@ -48,6 +49,10 @@ class SignIn extends React.Component {
   };
 
   render() {
+    if(this.props.currentUser)
+      {
+        window.open("/dashboard", "_self");
+      }
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -160,4 +165,8 @@ class SignIn extends React.Component {
   }
 }
 
-export default SignIn;
+const mapStateToProps = state => ({
+  currentUser: state.user.currentUser
+});
+
+export default connect(mapStateToProps)(SignIn);

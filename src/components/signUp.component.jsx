@@ -9,6 +9,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 
+import { connect } from 'react-redux';
+
 import {
   auth,
   createUserProfileDocument,
@@ -30,7 +32,7 @@ class SignUp extends React.Component {
     await signInWithGoogle();
     window.open("/dashboard", "_self");
   }
-  
+
   handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -58,6 +60,11 @@ class SignUp extends React.Component {
   };
 
   render() {
+
+    if(this.props.currentUser)
+      {
+        window.open("/dashboard", "_self");
+      }
     const { displayName, email, password } = this.state;
     return (
       <Container component="main" maxWidth="xs">
@@ -170,4 +177,8 @@ class SignUp extends React.Component {
   }
 }
 
-export default SignUp;
+const mapStateToProps = state => ({
+  currentUser: state.user.currentUser
+});
+
+export default connect(mapStateToProps)(SignUp);
