@@ -1,42 +1,62 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./App.css";
 import SignIn from "./components/signIn.component";
 import SignUp from "./components/signUp.component.jsx";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
-import UserContext from "./context/UserContext";
+
 import Dashboard from "./components/dashboard.components.jsx";
 
 require("dotenv").config();
 
-function App() {
-  const [currentUser, setCurrentUser] = useState();
+class App extends React.Component {
+  constructor() {
+    super();
 
-  useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      console.log("Hello1");
-      setCurrentUser(user);
-      createUserProfileDocument(user);
-      console.log(user);
+    this.state = {
+      currentUser: null,
+    };
+  }
+
+  unsubscribeFromAuth = null;
+
+  componentDidMount() {
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+      if (userAuth) {
+        const userRef = await createUserProfileDocument(userAuth);
+
+        userRef.onSnapshot((snapShot) => {
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data(),
+            },
+          });
+          console.log(this.state);
+        });
+      }
+      this.setState({ currentUser: userAuth });
     });
-  }, [auth]);
+  }
 
-  return (
-    <UserContext.Provider
-      value={{
-        userDetails: currentUser,
-        setUserDetails: setCurrentUser,
-      }}
-    >
+  componentWillUnmount() {
+    this.unsubscribeFromAuth();
+  }
+
+  render() {
+    return (
       <Router>
         <Routes>
-          <Route path="/" element={<SignIn />} />
+          <Route exact path="/" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/dashboard"
+            element={<Dashboard currentUser={this.state.currentUser} />}
+          />
         </Routes>
       </Router>
-    </UserContext.Provider>
-  );
+    );
+  }
 }
 
 export default App;
