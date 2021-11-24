@@ -2,8 +2,6 @@ import React from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -11,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 import { auth, signInWithGoogle } from "../firebase/firebase.utils.js";
 
 class SignIn extends React.Component {
@@ -49,10 +47,9 @@ class SignIn extends React.Component {
   };
 
   render() {
-    if(this.props.currentUser)
-      {
-        window.open("/dashboard", "_self");
-      }
+    if (this.props.currentUser) {
+      window.open("/dashboard", "_self");
+    }
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -113,14 +110,6 @@ class SignIn extends React.Component {
                 value={this.state.password}
                 onChange={this.handleChange}
               />
-              <Grid container alignItems="flex-start">
-                <Grid item>
-                  <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
-                    label="Remember me"
-                  />
-                </Grid>
-              </Grid>
               <Grid container spacing="2">
                 <Grid item xs>
                   <Button
@@ -144,11 +133,6 @@ class SignIn extends React.Component {
                 </Grid>
               </Grid>
               <Grid container justifyContent="space-between">
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
                 <Grid container item xs justifyContent="flex-end">
                   <Grid item>
                     <Link href="/signup" variant="body2">
@@ -165,8 +149,8 @@ class SignIn extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  currentUser: state.user.currentUser
+const mapStateToProps = (state) => ({
+  currentUser: state.user.currentUser,
 });
 
 export default connect(mapStateToProps)(SignIn);

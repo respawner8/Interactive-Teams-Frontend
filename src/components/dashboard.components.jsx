@@ -10,10 +10,7 @@ import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Button from "@mui/material/Button"
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ListItem from "@mui/material/ListItem";
@@ -21,9 +18,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
 import { auth } from "../firebase/firebase.utils.js";
+import DashboardMain from "./dashboardMain.component.jsx";
 
 const drawerWidth = 240;
 
@@ -73,8 +71,13 @@ const Drawer = styled(MuiDrawer, {
 
 const mdTheme = createTheme();
 
-function Dashboard({currentUser}) {
+function Dashboard({ currentUser }) {
   const [open, setOpen] = React.useState(true);
+  
+  const [dash, setDash] = React.useState(1);
+
+
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -91,12 +94,15 @@ function Dashboard({currentUser}) {
     }
   }
 
-  if(currentUser == null)
-  {
+  if (currentUser == null) {
     navigate("/");
   }
-  return (
 
+  React.useEffect(() => {
+    // call api using axios
+    // set boolean
+  });
+  return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
@@ -128,7 +134,7 @@ function Dashboard({currentUser}) {
               Interactive-Teams
             </Typography>
             <Typography variant="h6" color="inherit" component="div">
-              {currentUser ? currentUser.displayName + " " : "null " }
+              {currentUser ? currentUser.displayName + " " : "null "}
               <Button variant="contained" onClick={logOut}>
                 Logout
               </Button>
@@ -150,64 +156,39 @@ function Dashboard({currentUser}) {
           </Toolbar>
           <Divider />
           <List>
-            <ListItem button>
+            <ListItem
+              button
+              onClick={() => {
+                setDash(1);
+              }}
+            >
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>
-              <ListItemText primary="Create/Join Team" />
+              <ListItemText primary="Quiz" />
+            </ListItem>
+            <ListItem
+              button
+              onClick={() => {
+                setDash(2);
+              }}
+            >
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="Game" />
             </ListItem>
           </List>
         </Drawer>
-        <Box
-          component="main"
-          sx={{
-            backgroundColor: (theme) =>
-              theme.palette.mode === "light"
-                ? theme.palette.grey[100]
-                : theme.palette.grey[900],
-            flexGrow: 1,
-            height: "100vh",
-            overflow: "auto",
-          }}
-        >
-          <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  Create Team
-                </Paper>
-              </Grid>
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  Join Team
-                </Paper>
-              </Grid>
-            </Grid>
-          </Container>
-        </Box>
+    
+        <DashboardMain dash={dash} />
       </Box>
     </ThemeProvider>
   );
 }
 
-const mapStateToProps = state => ({
-  currentUser: state.user.currentUser
+const mapStateToProps = (state) => ({
+  currentUser: state.user.currentUser,
 });
 
 export default connect(mapStateToProps)(Dashboard);

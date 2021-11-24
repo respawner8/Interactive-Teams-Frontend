@@ -9,7 +9,9 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 
-import { connect } from 'react-redux';
+import axios from 'axios';
+
+import { connect } from "react-redux";
 
 import {
   auth,
@@ -45,6 +47,18 @@ class SignUp extends React.Component {
       );
 
       await createUserProfileDocument(user, { displayName });
+
+      axios
+        .post("http://localhost:5000/createUser", {
+          displayName: displayName,
+          email: email,
+        })
+        .then((res) => {
+          console.log("axios response : ", res.data.message);
+        })
+        .catch((err) => {
+          console.log("error : ", err);
+        });
       window.open("/dashboard", "_self");
 
       this.setState();
@@ -60,11 +74,9 @@ class SignUp extends React.Component {
   };
 
   render() {
-
-    if(this.props.currentUser)
-      {
-        window.open("/dashboard", "_self");
-      }
+    if (this.props.currentUser) {
+      window.open("/dashboard", "_self");
+    }
     const { displayName, email, password } = this.state;
     return (
       <Container component="main" maxWidth="xs">
@@ -177,8 +189,8 @@ class SignUp extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  currentUser: state.user.currentUser
+const mapStateToProps = (state) => ({
+  currentUser: state.user.currentUser,
 });
 
 export default connect(mapStateToProps)(SignUp);
