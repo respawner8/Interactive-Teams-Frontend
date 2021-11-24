@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import SignIn from "./components/signIn.component";
 import SignUp from "./components/signUp.component.jsx";
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 
@@ -55,5 +56,4 @@ const mapDispatchToProps = (dispatch) => ({
   setCurrentUser: (user) => dispatch(setCurrentUser(user)),
 });
 
-
-export default connect(null, mapDispatchToProps)(App);
+export default connect(null , mapDispatchToProps)(App);
