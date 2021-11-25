@@ -77,7 +77,6 @@ function Dashboard({ currentUser }) {
   const [dash, setDash] = React.useState(1);
 
 
-
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -159,6 +158,7 @@ function Dashboard({ currentUser }) {
             <ListItem
               button
               onClick={() => {
+                console.log("1")
                 setDash(1);
               }}
             >
@@ -170,6 +170,7 @@ function Dashboard({ currentUser }) {
             <ListItem
               button
               onClick={() => {
+                console.log("2")
                 setDash(2);
               }}
             >
@@ -181,7 +182,7 @@ function Dashboard({ currentUser }) {
           </List>
         </Drawer>
     
-        <DashboardMain dash={dash} />
+        <DashboardMain currentUser={currentUser} dash={dash} />
       </Box>
     </ThemeProvider>
   );
