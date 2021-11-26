@@ -22,6 +22,7 @@ import { connect } from "react-redux";
 
 import { auth } from "../firebase/firebase.utils.js";
 import DashboardMain from "./dashboardMain.component.jsx";
+import GameInterface from "./gameInterface.component.jsx";
 
 const drawerWidth = 240;
 
@@ -97,10 +98,17 @@ function Dashboard({ currentUser }) {
     navigate("/");
   }
 
-  React.useEffect(() => {
-    // call api using axios
-    // set boolean
-  });
+  function dashboardDisplay(){
+    if(dash === 1)
+      { return (<DashboardMain currentUser={currentUser}/>)
+      }
+    else if(dash === 2)
+      {
+        return (<GameInterface currentUser={currentUser} />)
+      }
+  }
+
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -181,8 +189,8 @@ function Dashboard({ currentUser }) {
             </ListItem>
           </List>
         </Drawer>
-    
-        <DashboardMain currentUser={currentUser} dash={dash} />
+          {dashboardDisplay()}
+        
       </Box>
     </ThemeProvider>
   );
