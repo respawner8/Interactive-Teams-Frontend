@@ -106,7 +106,7 @@ function DashboardMain({ currentUser }) {
 
   const createQuiz = () => {
     axios
-      .post("http://localhost:5000/createQuiz", {
+      .post(`${process.env.REACT_APP_BACKEND_URL}/createQuiz`, {
         quizName: quizName,
         quizCreator: currentUser.email,
         questions: savedQuestions,
@@ -167,20 +167,22 @@ function DashboardMain({ currentUser }) {
     console.log("code : ", code);
     setView(2);
 
-    axios.get(`http://localhost:5000/quiz/${code}`).then((res) => {
-      setSavedQuestions(res.data[0].questions);
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_URL}/quiz/${code}`)
+      .then((res) => {
+        setSavedQuestions(res.data[0].questions);
 
-      const { question, option1, option2, option3, option4, correctAns } =
-        res.data[0].questions[0];
+        const { question, option1, option2, option3, option4, correctAns } =
+          res.data[0].questions[0];
 
-      setQuestion(question);
-      setOption1(option1);
-      setOption2(option2);
-      setOption3(option3);
-      setOption4(option4);
-      setCorrectAns(correctAns);
-      setPage(1);
-    });
+        setQuestion(question);
+        setOption1(option1);
+        setOption2(option2);
+        setOption3(option3);
+        setOption4(option4);
+        setCorrectAns(correctAns);
+        setPage(1);
+      });
   }
 
   const seeResult = () => {
@@ -197,13 +199,17 @@ function DashboardMain({ currentUser }) {
     }
 
     setFinalScore(score);
-    setTimeout(()=>{setView(0)} ,5000 );
+    setTimeout(() => {
+      setView(0);
+    }, 5000);
   };
 
   function result() {
     return (
       <div>
-        <h1>Your Score : {finalScore} / {savedQuestions.length}</h1>
+        <h1>
+          Your Score : {finalScore} / {savedQuestions.length}
+        </h1>
       </div>
     );
   }
