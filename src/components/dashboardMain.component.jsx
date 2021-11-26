@@ -11,6 +11,7 @@ import {
   Pagination,
   Typography,
 } from "@mui/material";
+
 import axios from "axios";
 
 function DashboardMain({ currentUser }) {
@@ -27,10 +28,70 @@ function DashboardMain({ currentUser }) {
   const [correctAns, setCorrectAns] = React.useState(1);
 
   const [savedQuestions, setSavedQuestions] = React.useState([]);
-  console.log(savedQuestions);
+
+  const [answer, setAnswer] = React.useState();
+  const [savedAnswers, setSavedAnswers] = React.useState([]);
+  const [button1, setButton1] = React.useState("outlined");
+  const [button2, setButton2] = React.useState("outlined");
+  const [button3, setButton3] = React.useState("outlined");
+  const [button4, setButton4] = React.useState("outlined");
+
+  const updateAnswers = (page, answer) => {
+    if (savedAnswers.length < page) {
+      setSavedAnswers([...savedAnswers, answer]);
+    } else {
+      setSavedAnswers((prevAnswers) => {
+        prevAnswers[page - 1] = answer;
+        return [...prevAnswers];
+      });
+    }
+  };
+
+  const prev = () => {
+    if (page === 1) {
+      alert("you can't go back");
+    } else {
+      updateAnswers(page, {
+        answer,
+      });
+      setPage(page - 1);
+      const { question, option1, option2, option3, option4, correctAns } =
+        savedQuestions[page - 2];
+
+      setQuestion(question);
+      setOption1(option1);
+      setOption2(option2);
+      setOption3(option3);
+      setOption4(option4);
+      setCorrectAns(correctAns);
+    }
+  };
+
+  const next = () => {
+    if (page === savedQuestions.length) {
+      alert("This is last question");
+    } else {
+      updateAnswers(page, {
+        answer,
+      });
+      setPage(page + 1);
+      const { question, option1, option2, option3, option4, correctAns } =
+        savedQuestions[page];
+
+      setQuestion(question);
+      setOption1(option1);
+      setOption2(option2);
+      setOption3(option3);
+      setOption4(option4);
+      setCorrectAns(correctAns);
+    }
+  };
+
+  const submit = () => {
+    console.log("Test test");
+  };
 
   const createQuiz = () => {
-    console.log(currentUser);
     axios
       .post("http://localhost:5000/createQuiz", {
         quizName: quizName,
@@ -47,6 +108,7 @@ function DashboardMain({ currentUser }) {
         console.log(err);
       });
   };
+
   const updateQuestion = (page, question) => {
     if (savedQuestions.length < page) {
       setSavedQuestions([...savedQuestions, question]);
@@ -79,7 +141,6 @@ function DashboardMain({ currentUser }) {
       setOption4(option4);
       setCorrectAns(correctAns);
     } else {
-      console.log();
       setQuestion("");
       setOption1("");
       setOption2("");
@@ -92,9 +153,146 @@ function DashboardMain({ currentUser }) {
   function joinQuiz() {
     console.log("code : ", code);
     setView(2);
+
+    axios.get(`http://localhost:5000/quiz/${code}`).then((res) => {
+      setSavedQuestions(res.data[0].questions);
+
+      const { question, option1, option2, option3, option4, correctAns } =
+        res.data[0].questions[0];
+
+      setQuestion(question);
+      setOption1(option1);
+      setOption2(option2);
+      setOption3(option3);
+      setOption4(option4);
+      setCorrectAns(correctAns);
+      setPage(1);
+    });
   }
+
   function quizView() {
-      return (<h3>quiz yahan hai</h3>)
+    return (
+      <Container maxWidth="lg">
+        <Grid
+          container
+          spacing="10"
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 2,
+          }}
+        >
+          <Grid item xs={1}>
+            <h3>Q{page}</h3>
+          </Grid>
+          <Grid item xs={11}>
+            <h3>{question}</h3>
+          </Grid>
+        </Grid>
+        <Grid
+          container
+          spacing="10"
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 2,
+          }}
+        >
+          <Grid item xs={6}>
+            <Button
+              variant={button1}
+              fullWidth
+              onClick={() => {
+                setButton1("contained");
+                setButton2("outlined");
+                setButton3("outlined");
+                setButton4("outlined");
+
+                setAnswer(1);
+              }}
+            >
+              {option1}
+            </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Button
+              variant={button2}
+              fullWidth
+              onClick={() => {
+                setButton1("outlined");
+                setButton2("contained");
+                setButton3("outlined");
+                setButton4("outlined");
+
+                setAnswer(2);
+              }}
+            >
+              {option2}
+            </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Button
+              variant={button3}
+              fullWidth
+              onClick={() => {
+                setButton1("outlined");
+                setButton2("outlined");
+                setButton3("contained");
+                setButton4("outlined");
+
+                setAnswer(3);
+              }}
+            >
+              {option3}
+            </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Button
+              variant={button4}
+              fullWidth
+              onClick={() => {
+                setButton1("outlined");
+                setButton2("outlined");
+                setButton3("outlined");
+                setButton4("contained");
+
+                setAnswer(4);
+              }}
+            >
+              {option4}
+            </Button>
+          </Grid>
+        </Grid>
+        <Grid
+          container
+          spacing="10"
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 2,
+          }}
+        >
+          <Grid item xs={6}>
+            <Button variant="contained" onClick={prev}>
+              prev
+            </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Button variant="contained" onClick={next}>
+              next
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <Button variant="contained" onClick={submit}>
+              Submit
+            </Button>
+          </Grid>
+        </Grid>
+      </Container>
+    );
   }
   function createQuizView() {
     return (

@@ -158,7 +158,7 @@ function Dashboard({ currentUser }) {
             <ListItem
               button
               onClick={() => {
-                console.log("1")
+        
                 setDash(1);
               }}
             >
@@ -170,7 +170,7 @@ function Dashboard({ currentUser }) {
             <ListItem
               button
               onClick={() => {
-                console.log("2")
+          
                 setDash(2);
               }}
             >
