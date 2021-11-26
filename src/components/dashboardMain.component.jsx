@@ -31,10 +31,8 @@ function DashboardMain({ currentUser }) {
 
   const [answer, setAnswer] = React.useState();
   const [savedAnswers, setSavedAnswers] = React.useState([]);
-  const [button1, setButton1] = React.useState("outlined");
-  const [button2, setButton2] = React.useState("outlined");
-  const [button3, setButton3] = React.useState("outlined");
-  const [button4, setButton4] = React.useState("outlined");
+
+  const [finalScore, setFinalScore] = React.useState();
 
   const updateAnswers = (page, answer) => {
     if (savedAnswers.length < page) {
@@ -45,15 +43,15 @@ function DashboardMain({ currentUser }) {
         return [...prevAnswers];
       });
     }
+
+    return 1;
   };
 
   const prev = () => {
     if (page === 1) {
       alert("you can't go back");
     } else {
-      updateAnswers(page, {
-        answer,
-      });
+      updateAnswers(page, answer);
       setPage(page - 1);
       const { question, option1, option2, option3, option4, correctAns } =
         savedQuestions[page - 2];
@@ -64,6 +62,14 @@ function DashboardMain({ currentUser }) {
       setOption3(option3);
       setOption4(option4);
       setCorrectAns(correctAns);
+
+      console.log(savedAnswers, page);
+
+      if (page - 2 < savedAnswers.length) {
+        setAnswer(savedAnswers[page - 2]);
+      } else {
+        setAnswer(null);
+      }
     }
   };
 
@@ -71,9 +77,7 @@ function DashboardMain({ currentUser }) {
     if (page === savedQuestions.length) {
       alert("This is last question");
     } else {
-      updateAnswers(page, {
-        answer,
-      });
+      updateAnswers(page, answer);
       setPage(page + 1);
       const { question, option1, option2, option3, option4, correctAns } =
         savedQuestions[page];
@@ -84,11 +88,20 @@ function DashboardMain({ currentUser }) {
       setOption3(option3);
       setOption4(option4);
       setCorrectAns(correctAns);
+
+      console.log(savedAnswers, page);
+
+      if (page < savedAnswers.length) {
+        setAnswer(savedAnswers[page]);
+      } else {
+        setAnswer(null);
+      }
     }
   };
 
   const submit = () => {
-    console.log("Test test");
+    updateAnswers(page, answer);
+    setView(3);
   };
 
   const createQuiz = () => {
@@ -170,6 +183,59 @@ function DashboardMain({ currentUser }) {
     });
   }
 
+  const seeResult = () => {
+    let score = 0;
+    console.log(savedAnswers.length);
+    for (var i = 0; i < savedAnswers.length; i++) {
+      if (savedAnswers[i] === savedQuestions[i].correctAns) {
+        score = score + 1;
+      }
+    }
+
+    if (page > savedAnswers.length) {
+      if (savedQuestions[page - 1].correctAns === answer) score = score + 1;
+    }
+
+    setFinalScore(score);
+    setTimeout(()=>{setView(0)} ,5000 );
+  };
+
+  function result() {
+    return (
+      <div>
+        <h1>Your Score : {finalScore} / {savedQuestions.length}</h1>
+      </div>
+    );
+  }
+
+  function quizFinish() {
+    return (
+      <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "100px",
+          }}
+        >
+          <Button variant="contained" onClick={seeResult}>
+            See Result
+          </Button>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            direction: "column",
+            marginTop: "100px",
+          }}
+        >
+          {finalScore ? result() : null}
+        </div>
+      </div>
+    );
+  }
+
   function quizView() {
     return (
       <Container maxWidth="lg">
@@ -202,14 +268,9 @@ function DashboardMain({ currentUser }) {
         >
           <Grid item xs={6}>
             <Button
-              variant={button1}
+              variant={answer === 1 ? "contained" : "outlined"}
               fullWidth
               onClick={() => {
-                setButton1("contained");
-                setButton2("outlined");
-                setButton3("outlined");
-                setButton4("outlined");
-
                 setAnswer(1);
               }}
             >
@@ -218,14 +279,9 @@ function DashboardMain({ currentUser }) {
           </Grid>
           <Grid item xs={6}>
             <Button
-              variant={button2}
+              variant={answer === 2 ? "contained" : "outlined"}
               fullWidth
               onClick={() => {
-                setButton1("outlined");
-                setButton2("contained");
-                setButton3("outlined");
-                setButton4("outlined");
-
                 setAnswer(2);
               }}
             >
@@ -234,14 +290,9 @@ function DashboardMain({ currentUser }) {
           </Grid>
           <Grid item xs={6}>
             <Button
-              variant={button3}
+              variant={answer === 3 ? "contained" : "outlined"}
               fullWidth
               onClick={() => {
-                setButton1("outlined");
-                setButton2("outlined");
-                setButton3("contained");
-                setButton4("outlined");
-
                 setAnswer(3);
               }}
             >
@@ -250,14 +301,9 @@ function DashboardMain({ currentUser }) {
           </Grid>
           <Grid item xs={6}>
             <Button
-              variant={button4}
+              variant={answer === 4 ? "contained" : "outlined"}
               fullWidth
               onClick={() => {
-                setButton1("outlined");
-                setButton2("outlined");
-                setButton3("outlined");
-                setButton4("contained");
-
                 setAnswer(4);
               }}
             >
@@ -519,6 +565,8 @@ function DashboardMain({ currentUser }) {
       return createQuizView();
     } else if (view === 2) {
       return quizView();
+    } else if (view === 3) {
+      return quizFinish();
     }
   }
 
