@@ -374,7 +374,7 @@ function DashboardMain({ currentUser }) {
             </div>
           </Grid>
           <Grid item xs={1}>
-            <h3>Q1</h3>
+            <h3>Q{page}</h3>
           </Grid>
           <Grid item xs={11}>
             <TextField
